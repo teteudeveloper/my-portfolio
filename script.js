@@ -12,12 +12,17 @@ document.querySelectorAll('nav a').forEach(anchor => {
     });
 });
 
+let timeout; 
+
 window.onscroll = function() {
     stickyNav();
+    hideNavOnScroll();
 };
 
 const navbar = document.getElementById("navbar");
 const sticky = navbar.offsetTop;
+let lastScrollTop = 0; 
+let isScrolling = false; 
 
 function stickyNav() {
     if (window.pageYOffset > sticky) {
@@ -26,6 +31,34 @@ function stickyNav() {
         navbar.classList.remove("sticky");
     }
 }
+
+function hideNavOnScroll() {
+    const currentScroll = window.pageYOffset;
+
+    if (currentScroll > lastScrollTop || currentScroll < lastScrollTop) {
+        navbar.classList.add("hidden");
+        isScrolling = true;
+    }
+
+    if (currentScroll === 0 && !isScrolling) {
+        navbar.classList.remove("hidden");
+    }
+
+    lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+}
+
+function stopScrolling() {
+    if (window.pageYOffset === 0) {
+        navbar.classList.remove("hidden");
+    }
+    isScrolling = false;
+}
+
+window.addEventListener('scroll', () => {
+    clearTimeout(timeout); 
+
+    timeout = setTimeout(stopScrolling, 100); 
+});
 
 const sections = document.querySelectorAll('section');
 
