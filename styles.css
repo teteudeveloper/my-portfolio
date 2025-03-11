@@ -84,6 +84,12 @@ nav.sticky {
     box-shadow: var(--box-shadow);
 }
 
+nav.hidden {
+    top: -100px; 
+    opacity: 0;
+    transition: top 0.3s ease, opacity 0.3s ease;
+}
+
 nav ul {
     list-style-type: none;
     display: flex;
