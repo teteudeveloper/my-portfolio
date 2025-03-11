@@ -5,6 +5,10 @@ document.querySelectorAll('nav a').forEach(anchor => {
         document.querySelector(this.getAttribute('href')).scrollIntoView({
             behavior: 'smooth'
         });
+
+        if (document.body.classList.contains('active')) {
+            document.body.classList.remove('active');
+        }
     });
 });
 
@@ -41,4 +45,11 @@ window.addEventListener('scroll', animateSections);
 
 window.addEventListener('load', function() {
     document.body.classList.add('loaded');
+});
+
+const menuIcon = document.getElementById('menu-icon');
+const body = document.body;
+
+menuIcon.addEventListener('click', () => {
+    body.classList.toggle('active');
 });
