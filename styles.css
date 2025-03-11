@@ -7,9 +7,14 @@
     --border-radius: 16px;
     --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     --font-family: 'Roboto', sans-serif;
+    --font-size-large: 4rem;
+    --font-size-medium: 2.8rem;
+    --font-size-small: 1.2rem;
 }
 
-* {
+*,
+*::before,
+*::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -49,7 +54,7 @@ header {
 
 header h1 {
     margin: 0;
-    font-size: 4rem;
+    font-size: var(--font-size-large);
     font-weight: 700;
     letter-spacing: 1.5px;
     line-height: 1.2;
@@ -57,7 +62,7 @@ header h1 {
 }
 
 header p {
-    font-size: 1.2rem;
+    font-size: var(--font-size-small);
     margin-top: 10px;
     font-weight: 300;
 }
@@ -106,7 +111,7 @@ nav ul li a {
     color: white;
     text-decoration: none;
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: var(--font-size-small);
     transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
 }
 
@@ -116,7 +121,7 @@ nav ul li a:hover {
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
 }
 
-nav ul li a:focus {
+nav ul li a:focus-visible {
     outline: none;
     border-bottom: 2px solid var(--accent-color);
 }
@@ -149,7 +154,7 @@ section {
 }
 
 .section-title {
-    font-size: 2.8rem;
+    font-size: var(--font-size-medium);
     color: var(--primary-color);
     margin-bottom: 20px;
     border-bottom: 4px solid var(--primary-color);
@@ -176,7 +181,7 @@ ul {
 
 li {
     margin: 12px 0;
-    font-size: 1.1rem;
+    font-size: var(--font-size-small);
 }
 
 .skills-list li,
