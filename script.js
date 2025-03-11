@@ -12,17 +12,11 @@ document.querySelectorAll('nav a').forEach(anchor => {
     });
 });
 
-let timeout; 
-
-window.onscroll = function() {
-    stickyNav();
-    hideNavOnScroll();
-};
-
+let timeout;
+let lastScrollTop = 0;
+let isScrolling = false;
 const navbar = document.getElementById("navbar");
 const sticky = navbar.offsetTop;
-let lastScrollTop = 0; 
-let isScrolling = false; 
 
 function stickyNav() {
     if (window.pageYOffset > sticky) {
@@ -35,16 +29,17 @@ function stickyNav() {
 function hideNavOnScroll() {
     const currentScroll = window.pageYOffset;
 
-    if (currentScroll > lastScrollTop || currentScroll < lastScrollTop) {
+    if (currentScroll > lastScrollTop) {
         navbar.classList.add("hidden");
-        isScrolling = true;
-    }
-
-    if (currentScroll === 0 && !isScrolling) {
+    } else {
         navbar.classList.remove("hidden");
     }
 
-    lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+    if (currentScroll === 0) {
+        navbar.classList.remove("hidden");
+    }
+
+    lastScrollTop = Math.max(currentScroll, 0); 
 }
 
 function stopScrolling() {
@@ -55,16 +50,16 @@ function stopScrolling() {
 }
 
 window.addEventListener('scroll', () => {
-    clearTimeout(timeout); 
-
-    timeout = setTimeout(stopScrolling, 100); 
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+        stickyNav();
+        hideNavOnScroll();
+    }, 100); 
 });
 
 const sections = document.querySelectorAll('section');
-
 function animateSections() {
     const scrollPosition = window.scrollY + window.innerHeight;
-
     sections.forEach(section => {
         if (scrollPosition > section.offsetTop + 100) {
             section.classList.add('in-view');
@@ -76,13 +71,12 @@ function animateSections() {
 
 window.addEventListener('scroll', animateSections);
 
-window.addEventListener('load', function() {
+window.addEventListener('load', () => {
     document.body.classList.add('loaded');
 });
 
 const menuIcon = document.getElementById('menu-icon');
 const body = document.body;
-
 menuIcon.addEventListener('click', () => {
     body.classList.toggle('active');
 });
