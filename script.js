@@ -1,82 +1,122 @@
-document.querySelectorAll('nav a').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
+let menuIcon = document.querySelector('#menu-icon');
+let navbar = document.querySelector('.navbar');
 
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-        });
+menuIcon.onclick = () => {
+    menuIcon.classList.toggle('bx-x');
+    navbar.classList.toggle('active');
+};
 
-        if (document.body.classList.contains('active')) {
-            document.body.classList.remove('active');
-        }
+
+let sections = document.querySelectorAll('section');
+let navLinks = document.querySelectorAll('header nav a');
+
+window.onscroll = () => {
+    sections.forEach(sec => {
+        let top = window.scrollY;
+        let offset = sec.offsetTop - 150;
+        let height = sec.offsetHeight;
+        let id = sec.getAttribute('id');
+
+        if(top >= offset && top < offset + height) {
+            navLinks.forEach(links => {
+                links.classList.remove('active');
+                document.querySelector('header nav a[href*=' + id + ']').classList.add('active');
+            });
+        };
     });
+
+
+let header = document.querySelector('.header');
+
+header.classList.toggle('sticky', window.scrollY > 100);
+
+
+menuIcon.classList.remove('bx-x');
+navbar.classList.remove('active');
+
+};
+
+
+var swiper = new Swiper(".mySwiper", {
+    slidesPerView: 1,
+    spaceBetween: 50,
+    loop: true,
+    grabCursor: true,
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
 });
 
-let timeout;
-let lastScrollTop = 0;
-let isScrolling = false;
-const navbar = document.getElementById("navbar");
-const sticky = navbar.offsetTop;
 
-function stickyNav() {
-    if (window.pageYOffset > sticky) {
-        navbar.classList.add("sticky");
-    } else {
-        navbar.classList.remove("sticky");
-    }
-}
+let darkModeIcon = document.querySelector('#darkMode-icon');
 
-function hideNavOnScroll() {
-    const currentScroll = window.pageYOffset;
+darkModeIcon.onclick = () => {
+    darkModeIcon.classList.toggle('bx-sun');
+    document.body.classList.toggle('dark-mode');
+};
 
-    if (currentScroll > lastScrollTop) {
-        navbar.classList.add("hidden");
-    } else {
-        navbar.classList.remove("hidden");
-    }
 
-    if (currentScroll === 0) {
-        navbar.classList.remove("hidden");
-    }
-
-    lastScrollTop = Math.max(currentScroll, 0); 
-}
-
-function stopScrolling() {
-    if (window.pageYOffset === 0) {
-        navbar.classList.remove("hidden");
-    }
-    isScrolling = false;
-}
-
-window.addEventListener('scroll', () => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-        stickyNav();
-        hideNavOnScroll();
-    }, 100); 
+ScrollReveal({
+    distance: '80px',
+    duration: 2000,
+    delay: 200
 });
 
-const sections = document.querySelectorAll('section');
-function animateSections() {
-    const scrollPosition = window.scrollY + window.innerHeight;
-    sections.forEach(section => {
-        if (scrollPosition > section.offsetTop + 100) {
-            section.classList.add('in-view');
+ScrollReveal().reveal('.home-content, .heading', { origin: 'top' });
+ScrollReveal().reveal('.home-img img, .services-container, .portfolio-box, .testimonial-wrapper, .contact form', { origin: 'bottom' });
+ScrollReveal().reveal('.home-content h1, .about-img img', { origin: 'left' });
+ScrollReveal().reveal('.home-content h3, .home-content p, .about-content', { origin: 'right' });
+
+const form = document.querySelector('form');
+
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        nome: form.querySelector('input[name="nome"]').value,
+        email: form.querySelector('input[name="email"]').value,
+        telefone: form.querySelector('input[name="telefone"]').value,
+        assunto: form.querySelector('input[name="assunto"]').value,
+        mensagem: form.querySelector('textarea[name="mensagem"]').value,
+        dataEnvio: new Date().toLocaleString()
+    };
+
+    const relatorio = `
+        Novo Contato Recebido:
+        
+        Nome: ${formData.nome}
+        Email: ${formData.email} 
+        Telefone: ${formData.telefone}
+        Assunto: ${formData.assunto}
+        Mensagem: ${formData.mensagem}
+        Data/Hora: ${formData.dataEnvio}
+    `;
+
+    fetch("https://formspree.io/f/xldgnobv", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            ...formData,
+            relatorio: relatorio
+        })
+    })
+    .then(response => {
+        if(response.ok) {
+            alert("Mensagem enviada com sucesso!");
+            form.reset();
         } else {
-            section.classList.remove('in-view');
+            throw new Error("Erro ao enviar mensagem");
         }
+    })
+    .catch(error => {
+        alert("Ocorreu um erro ao enviar a mensagem. Tente novamente.");
+        console.error(error);
     });
-}
-
-window.addEventListener('scroll', animateSections);
-
-window.addEventListener('load', () => {
-    document.body.classList.add('loaded');
-});
-
-const menuIcon = document.getElementById('menu-icon');
-const body = document.body;
-menuIcon.addEventListener('click', () => {
-    body.classList.toggle('active');
 });
